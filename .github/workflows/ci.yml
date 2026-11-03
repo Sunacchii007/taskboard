@@ -9,8 +9,9 @@ jobs:
     steps: 
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
-        with: 
-           node-version: 20
+        if: ${{ !env.ACT }}
+        with:
+          node-version: 20
       - name: install
         run: npm ci
       - run: npm run lint
@@ -19,8 +20,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
-        with: 
-           node-version: 20
+        if: ${{ !env.ACT }}
+        with:
+          node-version: 20
       - name: install
         run: npm ci
       - run: npm test
@@ -28,11 +30,20 @@ jobs:
     needs: [lint , test]
     if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
+    env: 
+      APP_VERSION: ${{ github.sha }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
-        with: 
-           node-version: 20
+        if: ${{ !env.ACT }}
+        with:
+          node-version: 20
+      - run: echo "version=$APP_VERSION"
+        env:
+          APP_VERSION: hotfix
+      - run: echo "version=$APP_VERSION"
+
       - name: install
         run: npm ci
       - run: npm run build
+      - run: echo "version=$APP_VERSION"
