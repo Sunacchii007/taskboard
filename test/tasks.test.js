@@ -10,8 +10,8 @@ test('adds a task with a trimmed title', () => {
 });
 
 test('rejects an empty title', () => {
-  const store = createStore();
-  assert.throws(() => store.add('   '), /title is required/);
+     const store = createStore();
+      assert.throws(() => store.add('   '), /title is required/);
 });
 
 test('rejects a title longer than 100 characters', () => {
