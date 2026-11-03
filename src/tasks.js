@@ -11,7 +11,7 @@ function createStore() {
       if (typeof title !== 'string' || title.trim() === '') {
         throw new Error('title is required');
       }
-      if (title.length > 10) {
+      if (title.length > 100) {
         throw new Error('title must be 100 characters or fewer');
       }
       const task = { id: nextId++, title: title.trim(), done: false };
