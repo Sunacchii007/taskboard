@@ -1,28 +1,30 @@
-name: ci
+name: CI
 on:
- push: 
-  branches: [main]
- pull_request:
+  push:
+    branches: [main]
+  pull_request:
+
 jobs:
- lint-and-test:
-  - run-on: ubuntu-latest
+  lint-and-test:
+    runs-on: ubuntu-latest            
     steps:
-   - uses: actions/checkout@v4
-   - uses: actions/setup-node@v4
-     with:
-       node-version: 20
-   - name: install
-   - run: npm ci
-   - run: npm lint
-   - run: npm test
- build-and-push:
-  needs: lint-and-test
-  if: github.ref == 'ref/heads/main'
-  run-on: ubuntu-latest
-  steps:
-   - uses: actions/checkout@v4
-   - uses: actions/setup-node@v4
-     with: 
-      node-version: 20
-   - run: npm ci
-   - run: npm run build
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Install                
+        run: npm ci                  
+      - run: npm run lint            
+      - run: npm test
+
+  build:                             
+    needs: lint-and-test
+    if: github.ref == 'refs/heads/main'   
+    runs-on: ubuntu-latest            
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: npm ci
+      - run: npm run build
