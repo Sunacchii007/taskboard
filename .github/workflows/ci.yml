@@ -30,7 +30,7 @@ jobs:
         run: npm ci
       - run:  echo "matrix says ${{ matrix.node }}, real node is $(node --version)"
       - run: npm test
- build:
+  build:
      needs: [lint , test]
      if: github.ref == 'refs/heads/main'
      runs-on: ubuntu-latest
