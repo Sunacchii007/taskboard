@@ -2,48 +2,43 @@ name: ci
 on: 
   push:
      branches: [main]
-  pull_request: 
+  pull_request:
 jobs:
   lint:
     runs-on: ubuntu-latest
     steps: 
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
-        if: ${{ !env.ACT }}
-        with:
-          node-version: 20
+        with: 
+           node-version: 20
       - name: install
         run: npm ci
       - run: npm run lint
   test:
     runs-on: ubuntu-latest
+    strategy:
+        fail-fast: false
+        matrix: 
+            node: [20, 22, 24]
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
-        if: ${{ !env.ACT }}
-        with:
-          node-version: 20
+        with: 
+           node-version: ${{ matrix.node }}
+           cache: 'npm'
       - name: install
         run: npm ci
+      - run:  echo "matrix says ${{ matrix.node }}, real node is $(node --version)"
       - run: npm test
-  build:
-    needs: [lint , test]
-    if: github.ref == 'refs/heads/main'
-    runs-on: ubuntu-latest
-    env: 
-      APP_VERSION: ${{ github.sha }}
-    steps:
+ build:
+     needs: [lint , test]
+     if: github.ref == 'refs/heads/main'
+     runs-on: ubuntu-latest
+     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
-        if: ${{ !env.ACT }}
-        with:
-          node-version: 20
-      - run: echo "version=$APP_VERSION"
-        env:
-          APP_VERSION: hotfix
-      - run: echo "version=$APP_VERSION"
-
+        with: 
+           node-version: 20
       - name: install
         run: npm ci
       - run: npm run build
-      - run: echo "version=$APP_VERSION"
